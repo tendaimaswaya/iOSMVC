@@ -46,19 +46,20 @@ class HomeViewController: BaseViewController {
         didSet{
             DispatchQueue.main.async {
                 self.alert("That didn't work", self.error, execFunc: self.loadContent)
+                self.refreshControl.endRefreshing()
             }
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        constrainViews()
         subscribeToViewModel()
         loadContent()
     }
     
     override func viewDidLayoutSubviews() {
         self.title = "The Milky Way"
-        constrainViews()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -132,8 +133,8 @@ extension HomeViewController:UITableViewDataSource, UITableViewDelegate{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = contentList.items[indexPath.row]
-        viewModel.cellSubject.on(.next(item))
+        let cellData = contentList.items[indexPath.row]
+        viewModel.cellSubject.on(.next(cellData))
        
         if let index = self.tableView.indexPathForSelectedRow{
             self.tableView.deselectRow(at: index, animated: true)
